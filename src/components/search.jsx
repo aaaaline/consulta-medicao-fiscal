@@ -75,9 +75,8 @@ const Search = () => {
             {resultado?.erro && (
                 <div style={{ marginTop: '10px', padding: '15px', border: '1px solid red', borderRadius: '8px', backgroundColor: '#fff5f5' }}>
                     <p style={{ color: 'red', fontWeight: 'bold' }}>{resultado.erro}</p>
-                    <p>Pesquisar nova UC?</p>
                     <button onClick={handleReset} style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}>
-                        Tentar Outra UC
+                        Buscar nova UC
                     </button>
                 </div>
             )}
