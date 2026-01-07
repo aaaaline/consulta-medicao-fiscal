@@ -5,6 +5,10 @@ const Search = () => {
     const [resultado, setResultado] = useState(null);
     const [carregando, setCarregando] = useState(false);
 
+    const handleDownload = () => {
+        window.open('/api/download-logs', '_blank');
+    };
+
     const handleSearch = async () => {
         if (!search) return;
         
@@ -12,7 +16,6 @@ const Search = () => {
         setResultado(null);
 
         try {
-            // const response = await fetch(`http://127.0.0.1:5000/api/consulta?uc=${search}`);
             const response = await fetch(`/api/consulta?uc=${search}`);
             const data = await response.json();
 
@@ -35,7 +38,16 @@ const Search = () => {
 
     return (
         <div className="search">
-            <h2>Pesquisar:</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <h2 style={{ margin: 0 }}>Pesquisar:</h2>
+                <button 
+                    onClick={handleDownload} 
+                    style={{ backgroundColor: '#28a745', fontSize: '12px', padding: '5px 10px' }}
+                    title="Baixar lista de UCs pesquisadas que não foram encontradas"
+                >
+                    Baixar 'ucs_nao_encontradas.csv'
+                </button>
+            </div>
 
             {(!resultado || resultado.erro) && (
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>

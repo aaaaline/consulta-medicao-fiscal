@@ -35,6 +35,21 @@ def registrar_uc_nao_encontrada(uc):
     except Exception as e:
         print(f"Erro ao salvar log: {e}")
 
+@app.route('/api/download-logs', methods=['GET'])
+def download_logs():
+    try:
+        if os.path.exists(log_csv_path):
+            return send_file(
+                log_csv_path,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name='ucs_nao_encontradas.csv'
+            )
+        else:
+            return jsonify({"erro": "Arquivo de logs ainda nao foi criado."}), 404
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
 @app.route('/api/consulta', methods=['GET'])
 def consultar():
     if df is None:
