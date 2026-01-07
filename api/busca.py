@@ -13,8 +13,8 @@ CORS(app)
 base_path = os.path.dirname(__file__)
 csv_path = os.path.join(base_path, 'dados.csv')
 
-url = os.environ.get("SUPABASE_URL")
-key = os.environ.get("SUPABASE_SECRET_KEY")
+url = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
+key = os.environ.get("SUPABASE_SECRET_KEY") or os.environ.get("SUPABASE_ANON_KEY")
 supabase = create_client(url, key)
 
 df = None
