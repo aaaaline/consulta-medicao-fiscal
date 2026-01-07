@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import pandas as pd
 import os
+import io
 from datetime import datetime
+from supabase import create_client
 
 app = Flask(__name__)
 CORS(app)
 
 base_path = os.path.dirname(__file__)
 csv_path = os.path.join(base_path, 'dados.csv')
-log_csv_path = os.path.join(base_path, 'ucs_nao_encontradas.csv') 
+
+url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
+key = os.environ.get("SUPABASE_SECRET_KEY")
+supabase = create_client(url, key)
 
 df = None
 load_error = None
@@ -25,30 +30,13 @@ except Exception as e:
     print(f"Erro ao carregar CSV principal: {load_error}")
 
 def registrar_uc_nao_encontrada(uc):
-    try:
-        novo_registro = pd.DataFrame({
-            'uc_pesquisada': [uc],
-            'data_pesquisa': [datetime.now().strftime('%d/%m/%Y %H:%M:%S')]
-        })
-        
-        novo_registro.to_csv(log_csv_path, mode='a', index=False, sep=',', encoding='utf-8', header=False)
-    except Exception as e:
-        print(f"Erro ao salvar log: {e}")
-
-@app.route('/api/download-logs', methods=['GET'])
-def download_logs():
-    try:
-        if os.path.exists(log_csv_path):
-            return send_file(
-                log_csv_path,
-                mimetype='text/csv',
-                as_attachment=True,
-                download_name='ucs_nao_encontradas.csv'
-            )
-        else:
-            return jsonify({"erro": "Arquivo de logs ainda nao foi criado."}), 404
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
+    # Em vez de salvar no CSV local que some
+    data = {
+        "uc_pesquisada": uc,
+        "data_pesquisa": datetime.now().isoformat()
+    }
+    # salva as ucs no banco de dados do supabase, que está integrado ao vercel
+    supabase.table("ucs_nao_encontradas").insert(data).execute()
 
 @app.route('/api/consulta', methods=['GET'])
 def consultar():
