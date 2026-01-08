@@ -1,112 +1,126 @@
 import { useState } from 'react';
 
 const Search = () => {
-    const [search, setSearch] = useState("");
-    const [resultado, setResultado] = useState(null);
-    const [carregando, setCarregando] = useState(false);
+  const [equipe, setEquipe] = useState("");
+  const [search, setSearch] = useState("");
+  const [resultado, setResultado] = useState(null);
+  const [carregando, setCarregando] = useState(false);
 
-    const handleDownload = () => {
-        window.open('/api/download-logs', '_blank');
-    };
+  const handleDownload = () => {
+    window.open('/api/download-logs', '_blank');
+  };
 
-    const handleSearch = async () => {
-        if (!search) return;
+  const handleSearch = async () => {
+    const equipeTrim = equipe.trim();
+    const ucTrim = search.trim();
 
-        setCarregando(true);
-        setResultado(null);
+    if (!equipeTrim) {
+      setResultado({ erro: "Informe o prefixo da equipe." });
+      return;
+    }
+    if (!ucTrim) {
+      setResultado({ erro: "Informe a UC para consultar." });
+      return;
+    }
 
-        try {
-            const response = await fetch(`/api/consulta?uc=${search}`);
-            const data = await response.json();
+    setCarregando(true);
+    setResultado(null);
 
-            if (response.ok) {
-                setResultado(data);
-            } else {
-                setResultado({ erro: data.erro || "UC não encontrada." });
-            }
-        } catch (error) {
-            setResultado({ erro: "Erro ao conectar com o servidor." });
-        } finally {
-            setCarregando(false);
-        }
-    };
+    try {
+      const ucParam = encodeURIComponent(ucTrim);
+      const equipeParam = encodeURIComponent(equipeTrim);
 
-    const handleReset = () => {
-        setSearch("");
-        setResultado(null);
-    };
+      const response = await fetch(`/api/consulta?uc=${ucParam}&equipe=${equipeParam}`);
+      const data = await response.json();
 
-    return (
-        <div className="search">
-            {/* Botão de download */}
-            <div className="top-actions">
-                <button
-                    onClick={handleDownload}
-                    className="download-btn"
-                    title="Baixar lista de UCs pesquisadas que não foram encontradas"
-                >
-                    Baixar ucs_nao_encontradas.csv
-                </button>
-            </div>
+      if (response.ok) {
+        setResultado(data);
+      } else {
+        setResultado({ erro: data.erro || "UC não encontrada." });
+      }
+    } catch (error) {
+      setResultado({ erro: "Erro ao conectar com o servidor." });
+    } finally {
+      setCarregando(false);
+    }
+  };
 
-            <p className="label">Informe o prefixo da equipe:</p>
-            <input
-                type="text"
-                placeholder="GOIF000M"
-                className="input"
-            />
+  const handleReset = () => {
+    setSearch("");
+    setResultado(null);
+    // mantém equipe para não precisar redigitar
+  };
 
-            <p className="label">Digite o número da UC a ser consultada:</p>
+  const podeConsultar = equipe.trim().length > 0 && search.trim().length > 0;
 
-            {(!resultado || resultado.erro) && (
-                <div className="search-row">
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Digite a UC a ser pesquisada"
-                        className="input"
-                    />
-                    <button
-                        onClick={handleSearch}
-                        disabled={carregando}
-                        className="primary-btn"
-                    >
-                        {carregando ? "Buscando..." : "Consultar"}
-                    </button>
-                </div>
-            )}
+  return (
+    <div className="search">
+      {/* Botão de download */}
+      <div className="top-actions">
+        <button
+          onClick={handleDownload}
+          className="download-btn"
+          title="Baixar lista de UCs pesquisadas que não foram encontradas"
+        >
+          Baixar ucs_nao_encontradas.csv
+        </button>
+      </div>
 
-            {resultado && !resultado.erro && (
-                <div className="resultado-container">
-                    <p><strong>UF:</strong> {resultado.UF}</p>
-                    <p><strong>Posto:</strong> {resultado.POSTO}</p>
-                    <p><strong>IP:</strong> {resultado.IP}</p>
-                    <p><strong>UC:</strong> {resultado.UC}</p>
-                    <p><strong>Medidor:</strong> {resultado.MEDIDOR}</p>
+      <p className="label">Informe o prefixo da equipe:</p>
+      <input
+        type="text"
+        placeholder="Prefixo da Equipe"
+        className="input"
+        value={equipe}
+        onChange={(e) => setEquipe(e.target.value)}
+      />
 
-                    <button
-                        onClick={handleReset}
-                        className="secondary-btn"
-                    >
-                        Nova Pesquisa
-                    </button>
-                </div>
-            )}
+      <p className="label">Digite o número da UC a ser consultada:</p>
 
-            {resultado?.erro && (
-                <div className="erro-container">
-                    <p className="erro-texto">{resultado.erro}</p>
-                    <button
-                        onClick={handleReset}
-                        className="danger-btn"
-                    >
-                        Buscar nova UC
-                    </button>
-                </div>
-            )}
+      {(!resultado || resultado.erro) && (
+        <div className="search-row">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Número da UC"
+            className="input"
+          />
+          <button
+            onClick={handleSearch}
+            disabled={carregando || !podeConsultar}
+            className="primary-btn"
+            title={!podeConsultar ? "Preencha equipe e UC para consultar" : ""}
+          >
+            {carregando ? "Buscando..." : "Consultar"}
+          </button>
         </div>
-    );
+      )}
+
+      {resultado && !resultado.erro && (
+        <div className="resultado-container">
+          <p><strong>UF:</strong> {resultado.UF}</p>
+          <p><strong>Posto:</strong> {resultado.POSTO}</p>
+          <p><strong>IP:</strong> {resultado.IP}</p>
+          <p><strong>UC:</strong> {resultado.UC}</p>
+          <p><strong>Medidor:</strong> {resultado.MEDIDOR}</p>
+
+          <button onClick={handleReset} className="secondary-btn">
+            Nova Pesquisa
+          </button>
+        </div>
+      )}
+
+      {resultado?.erro && (
+        <div className="erro-container">
+          <p className="erro-texto">{resultado.erro}</p>
+          <button onClick={handleReset} className="danger-btn">
+            Buscar nova UC
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Search;
