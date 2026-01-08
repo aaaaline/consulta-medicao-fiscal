@@ -6,22 +6,33 @@ const Search = () => {
   const [resultado, setResultado] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
+  // NOVO: estados de validação
+  const [equipeErro, setEquipeErro] = useState(false);
+  const [ucErro, setUcErro] = useState(false);
+
   const handleDownload = () => {
     window.open('/api/download-logs', '_blank');
   };
 
+  const validarCampos = () => {
+    const equipeOk = equipe.trim().length > 0;
+    const ucOk = search.trim().length > 0;
+
+    setEquipeErro(!equipeOk);
+    setUcErro(!ucOk);
+
+    return equipeOk && ucOk;
+  };
+
   const handleSearch = async () => {
+    // valida e destaca em vermelho se faltar
+    if (!validarCampos()) {
+      setResultado({ erro: "Preencha os campos obrigatórios." });
+      return;
+    }
+
     const equipeTrim = equipe.trim();
     const ucTrim = search.trim();
-
-    if (!equipeTrim) {
-      setResultado({ erro: "Informe o prefixo da equipe." });
-      return;
-    }
-    if (!ucTrim) {
-      setResultado({ erro: "Informe a UC para consultar." });
-      return;
-    }
 
     setCarregando(true);
     setResultado(null);
@@ -49,6 +60,7 @@ const Search = () => {
     setSearch("");
     setResultado(null);
     // mantém equipe para não precisar redigitar
+    setUcErro(false);
   };
 
   const podeConsultar = equipe.trim().length > 0 && search.trim().length > 0;
@@ -66,29 +78,42 @@ const Search = () => {
         </button>
       </div>
 
-      <p className="label">Informe o prefixo da equipe:</p>
+      <p className="label">Informe o prefixo da equipe*</p>
       <input
         type="text"
         placeholder="Prefixo da Equipe"
-        className="input"
+        className={`input ${equipeErro ? 'input-error' : ''}`}
         value={equipe}
-        onChange={(e) => setEquipe(e.target.value)}
+        onChange={(e) => {
+          setEquipe(e.target.value);
+          if (e.target.value.trim()) setEquipeErro(false);
+        }}
+        onBlur={() => setEquipeErro(!equipe.trim())}
       />
+      {equipeErro && <small className="field-error">Campo obrigatório.</small>}
 
-      <p className="label">Digite o número da UC a ser consultada:</p>
+      <p className="label">Digite o número da UC a ser consultada*</p>
 
       {(!resultado || resultado.erro) && (
         <div className="search-row">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Número da UC"
-            className="input"
-          />
+          <div style={{ flex: 1 }}>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                if (e.target.value.trim()) setUcErro(false);
+              }}
+              onBlur={() => setUcErro(!search.trim())}
+              placeholder="Número da UC"
+              className={`input ${ucErro ? 'input-error' : ''}`}
+            />
+            {ucErro && <small className="field-error">Campo obrigatório.</small>}
+          </div>
+
           <button
             onClick={handleSearch}
-            disabled={carregando || !podeConsultar}
+            disabled={carregando}
             className="primary-btn"
             title={!podeConsultar ? "Preencha equipe e UC para consultar" : ""}
           >
@@ -119,6 +144,10 @@ const Search = () => {
           </button>
         </div>
       )}
+
+      <p className="footer-hint">
+        Verificar UCs vizinhas (direita e esquerda), caso a UC não seja encontrada.
+      </p>
     </div>
   );
 };

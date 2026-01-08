@@ -136,3 +136,24 @@ button:hover {
     font-size: 1.4rem;
   }
 }
+
+/* Destaque de erro nos campos */
+.input-error {
+  border: 2px solid #dc3545;
+  outline: none;
+}
+
+.field-error {
+  display: block;
+  margin-top: 4px;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+/* Mensagem final */
+.footer-hint {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #4d4d4d;
+  text-align: center;
+}

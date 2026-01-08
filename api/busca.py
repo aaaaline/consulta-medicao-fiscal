@@ -116,7 +116,7 @@ def consultar():
         uc_int = validar_uc_para_int8(uc_raw)
         registrar_uc_nao_encontrada(uc_int, equipe)
 
-        return jsonify({"erro": "UC não encontrada - verificar UCs vizinhas (direita e esquerda)"}), 404
+        return jsonify({"erro": "UC não encontrada."}), 404
 
     except ValueError as ve:
         return jsonify({"erro": str(ve)}), 400
