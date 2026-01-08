@@ -20,7 +20,6 @@ supabase = create_client(url, key)
 df = None
 load_error = None
 
-# Carregamento do banco de dados principal
 try:
     cols = ['UF', 'POSTO', 'IP', 'UC', 'MEDIDOR']
     df = pd.read_csv(csv_path, sep=';', dtype=str, low_memory=False, usecols=cols)
@@ -73,7 +72,7 @@ def consultar():
 
     uc_query = request.args.get('uc')
     if not uc_query:
-        return jsonify({"erro": "Parametro UC e obrigatorio"}), 400
+        return jsonify({"erro": "Parâmetro UC obrigatório"}), 400
 
     try:
         uc_query = uc_query.strip()
@@ -84,7 +83,7 @@ def consultar():
             return jsonify(data)
         
         registrar_uc_nao_encontrada(uc_query)
-        return jsonify({"erro": "UC nao encontrada"}), 404
+        return jsonify({"erro": "UC não encontrada - verificar UCs vizinhas (direita e esquerda)"}), 404
         
     except Exception as e:
         return jsonify({"erro": f"Erro durante a busca: {str(e)}"}), 500

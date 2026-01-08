@@ -22,7 +22,7 @@ const Search = () => {
             if (response.ok) {
                 setResultado(data);
             } else {
-                setResultado({ erro: data.erro || "UC nao encontrada." });
+                setResultado({ erro: data.erro || "UC não encontrada." });
             }
         } catch (error) {
             setResultado({ erro: "Erro ao conectar com o servidor." });
@@ -43,7 +43,7 @@ const Search = () => {
                 <button 
                     onClick={handleDownload} 
                     style={{ backgroundColor: '#28a745', fontSize: '12px', padding: '5px 10px' }}
-                    title="Baixar lista de UCs pesquisadas que n�o foram encontradas"
+                    title="Baixar lista de UCs pesquisadas que não foram encontradas"
                 >
                     Baixar 'ucs_nao_encontradas.csv'
                 </button>
@@ -55,7 +55,7 @@ const Search = () => {
                         type="text" 
                         value={search} 
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Digite a UC a ser pesquisada."
+                        placeholder="Digite a UC a ser pesquisada"
                         style={{ flex: 1, padding: '8px' }}
                     />
                     <button onClick={handleSearch} disabled={carregando}>
