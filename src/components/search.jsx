@@ -11,7 +11,7 @@ const Search = () => {
 
     const handleSearch = async () => {
         if (!search) return;
-        
+
         setCarregando(true);
         setResultado(null);
 
@@ -38,56 +38,69 @@ const Search = () => {
 
     return (
         <div className="search">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <h2 style={{ margin: 0 }}>Pesquisar:</h2>
-                <button 
-                    onClick={handleDownload} 
-                    style={{ backgroundColor: '#28a745', fontSize: '12px', padding: '5px 10px' }}
+            {/* Botão de download */}
+            <div className="top-actions">
+                <button
+                    onClick={handleDownload}
+                    className="download-btn"
                     title="Baixar lista de UCs pesquisadas que não foram encontradas"
                 >
-                    Baixar 'ucs_nao_encontradas.csv'
+                    Baixar ucs_nao_encontradas.csv
                 </button>
             </div>
 
+            <p className="label">Informe o prefixo da equipe:</p>
+            <input
+                type="text"
+                placeholder="GOIF000M"
+                className="input"
+            />
+
+            <p className="label">Digite o número da UC a ser consultada:</p>
+
             {(!resultado || resultado.erro) && (
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-                    <input 
-                        type="text" 
-                        value={search} 
+                <div className="search-row">
+                    <input
+                        type="text"
+                        value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Digite a UC a ser pesquisada"
-                        style={{ flex: 1, padding: '8px' }}
+                        className="input"
                     />
-                    <button onClick={handleSearch} disabled={carregando}>
+                    <button
+                        onClick={handleSearch}
+                        disabled={carregando}
+                        className="primary-btn"
+                    >
                         {carregando ? "Buscando..." : "Consultar"}
                     </button>
                 </div>
             )}
 
             {resultado && !resultado.erro && (
-                <div className="resultado-container" style={{ 
-                    textAlign: 'left', 
-                    padding: '15px', 
-                    backgroundColor: '#f8f9fa', 
-                    borderRadius: '8px',
-                    border: '1px solid #ddd'
-                }}>
+                <div className="resultado-container">
                     <p><strong>UF:</strong> {resultado.UF}</p>
                     <p><strong>Posto:</strong> {resultado.POSTO}</p>
                     <p><strong>IP:</strong> {resultado.IP}</p>
                     <p><strong>UC:</strong> {resultado.UC}</p>
                     <p><strong>Medidor:</strong> {resultado.MEDIDOR}</p>
-                    
-                    <button onClick={handleReset} style={{ marginTop: '10px', backgroundColor: '#007bff', color: 'white' }}>
+
+                    <button
+                        onClick={handleReset}
+                        className="secondary-btn"
+                    >
                         Nova Pesquisa
                     </button>
                 </div>
             )}
 
             {resultado?.erro && (
-                <div style={{ marginTop: '10px', padding: '15px', border: '1px solid red', borderRadius: '8px', backgroundColor: '#fff5f5' }}>
-                    <p style={{ color: 'red', fontWeight: 'bold' }}>{resultado.erro}</p>
-                    <button onClick={handleReset} style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}>
+                <div className="erro-container">
+                    <p className="erro-texto">{resultado.erro}</p>
+                    <button
+                        onClick={handleReset}
+                        className="danger-btn"
+                    >
                         Buscar nova UC
                     </button>
                 </div>

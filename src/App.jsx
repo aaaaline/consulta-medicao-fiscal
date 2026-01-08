@@ -7,7 +7,7 @@ function App() {
 
   return (
       <div className="app">
-        <h1>Consulta Medi&ccedil;&atilde;o Fiscal</h1>
+        <h1>Consulta Medição Fiscal</h1>
         <Search/>
         
       </div>
