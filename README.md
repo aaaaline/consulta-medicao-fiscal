@@ -27,7 +27,7 @@ Além da consulta, o sistema registra, em um banco de dados, para controle poste
 ### Infraestrutura
 - **Vercel**: Hospedagem do Frontend e Backend (via Serverless Functions).
 
-A aplicação utiliza um arquivo CSV como base de dados e roda em arquitetura *Serverless* no Ver
+A aplicação utiliza um arquivo CSV como base de dados e roda em arquitetura *Serverless* no Vercel.  
    
 ## Deploy no Vercel
 
