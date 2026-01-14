@@ -63,35 +63,6 @@ def registrar_uc_nao_encontrada(uc_int: int, equipe: str):
     except Exception as e:
         print(f"Erro ao salvar no Supabase: {e}")
 
-
-@app.route('/api/download-logs', methods=['GET'])
-def download_logs():
-    try:
-        response = supabase.table("ucs_nao_encontradas").select("*").execute()
-
-        if not response.data:
-            return jsonify({"erro": "Nenhum log encontrado no banco."}), 404
-
-        log_df = pd.DataFrame(response.data)
-
-        proxy = io.StringIO()
-        log_df.to_csv(proxy, index=False, sep=';', encoding='utf-8')
-
-        mem = io.BytesIO()
-        mem.write(proxy.getvalue().encode('utf-8'))
-        mem.seek(0)
-        proxy.close()
-
-        return send_file(
-            mem,
-            mimetype='text/csv',
-            as_attachment=True,
-            download_name='ucs_nao_encontradas.csv'
-        )
-    except Exception as e:
-        return jsonify({"erro": f"Erro ao gerar CSV: {str(e)}"}), 500
-
-
 @app.route('/api/consulta', methods=['GET'])
 def consultar():
     if df is None:

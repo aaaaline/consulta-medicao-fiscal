@@ -5,14 +5,8 @@ const Search = () => {
   const [search, setSearch] = useState("");
   const [resultado, setResultado] = useState(null);
   const [carregando, setCarregando] = useState(false);
-
-  // NOVO: estados de validação
   const [equipeErro, setEquipeErro] = useState(false);
   const [ucErro, setUcErro] = useState(false);
-
-  const handleDownload = () => {
-    window.open('/api/download-logs', '_blank');
-  };
 
   const validarCampos = () => {
     const equipeOk = equipe.trim().length > 0;
@@ -67,17 +61,7 @@ const Search = () => {
 
   return (
     <div className="search">
-      {/* Botão de download */}
-      <div className="top-actions">
-        <button
-          onClick={handleDownload}
-          className="download-btn"
-          title="Baixar lista de UCs pesquisadas que não foram encontradas"
-        >
-          Baixar ucs_nao_encontradas.csv
-        </button>
-      </div>
-
+    
       <p className="label">Informe o prefixo da equipe*</p>
       <input
         type="text"

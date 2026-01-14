@@ -38,24 +38,19 @@ h1 {
   box-sizing: border-box;
 }
 
-/* Linha input + botão */
+/* Linha input + botï¿½o */
 .search-row {
   display: flex;
   gap: 10px;
 }
 
-/* Botão download */
+/* Botï¿½o download */
 .top-actions {
   display: flex;
   justify-content: flex-end;
 }
 
-.download-btn {
-  background-color: #28a745;
-  font-size: 12px;
-}
-
-/* Botões */
+/* Botï¿½es */
 button {
   background-color: #333974;
   color: #fff;
